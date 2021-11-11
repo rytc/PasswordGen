@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/reset.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+        .pw_output {
+            display:block;
+            border: 1px dashed red; 
+            font-family: 'Courier New', Courier, monospace;
+            padding: 1em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-light" style="margin-bottom: 1em;">
+        <div class="container-fluid">
+            <span class="navbar-brand"> Password Generator</span>
+        </div>
+    </nav>
+
+    <main class="container">
+                <div class="row">
+            <div class="col-md-12">
+                <p id="pw" class="pw_output">Generated Password</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary" id="start_gen">Generate Password</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        let generator = {
+            length:    0,
+            lc:        true,
+            uc:        true,
+            numerical: true,
+            special:   true
+        };
+
+        const lc_list   = 'abcdefghijklmnopqrstuvwxyz';
+        const uc_list   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const num_list  = '1234567890';
+        const spec_list = '!@#$%^&*()_+}{[]/.,<>?\\|~`:\";\'';
+
+        const generate_password = () => {
+            if(generator.lc === false &&
+               generator.uc === false &&
+               generator.numerical === false &&
+               generator.special === false) {
+                swal("Invalid password criteria selected. Must select at least one character type.", {
+                    icon: "error"
+                });
+            } else {
+                let char_list = "";
+                if(generator.lc) {
+                    char_list = char_list + lc_list;
+                }
+
+                if(generator.uc) {
+                    char_list = char_list + uc_list;
+                }
+
+                if(generator.numerical) {
+                    char_list = char_list + num_list;
+                }
+
+                if(generator.special) {
+                    char_list = char_list + spec_list;
+                }
+
+                let result = "";
+
+                for(let i = 0; i < generator.length; i++) {
+                    let char = char_list.substr(Math.floor(Math.random() * char_list.length), 1);
+                    result = result + char;
+                }
+
+                document.getElementById('pw').textContent = result;
+            }
+        }
+
+        const ask_for_specialchars = () => {
+            swal("Use special characters?", {
+                icon: "info",
+                buttons: {
+                    yes: "Yes",
+                    no: "No"
+                }
+            }).then((value) => {
+                if(value === 'yes') {
+                    generator.special = true;
+                } else {
+                    generator.special = false;
+                }
+                generate_password();
+            });
+        }
+
+        const ask_for_numeric = () => {
+            swal("Use numerics?", {
+                icon: "info",
+                buttons: {
+                    yes: "Yes",
+                    no: "No"
+                }
+            }).then((value) => {
+                if(value === 'yes') {
+                    generator.numerical = true;
+                } else {
+                    generator.numerical = false;
+                }
+                ask_for_specialchars();
+            });
+        }
+
+        const ask_for_uppercase = () => {
+            swal("Use upper case?", {
+                icon: "info",
+                buttons: {
+                    yes: "Yes",
+                    no: "No"
+                }
+            }).then((value) => {
+                if(value === 'yes') {
+                    generator.uc = true;
+                } else {
+                    generator.uc = false;
+                }
+                ask_for_numeric();
+            });
+        };
+
+        const ask_for_lowercase = () => {
+            swal("Use lower case?", {
+                icon: "info",
+                buttons: {
+                    yes: "Yes",
+                    no: "No"
+                }
+            }).then((value) => {
+                if(value === 'yes') {
+                    generator.lc = true;
+                } else {
+                    generator.lc = false;
+                }
+                ask_for_uppercase();
+            });
+        };
+
+        const begin_generator_prompts = () => {
+            swal("Pick a password length (minimum of 8 characters, max of 128 characters)", {
+                content: "input",
+                icon: "info",
+            }).then((value) => {
+                generator.length = parseInt(value);
+                if(generator.length < 8 || generator.length > 128 || isNaN(generator.length)) {
+                    begin_generator_prompts();
+                } else {
+                    ask_for_lowercase();
+                }
+            });
+        };
+
+        document.getElementById('start_gen').addEventListener('click', () => begin_generator_prompts());
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</body>
+</html>
