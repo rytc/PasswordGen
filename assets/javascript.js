@@ -6,41 +6,41 @@ let generator = {
     special:   true
 };
 
-const lc_list   = 'abcdefghijklmnopqrstuvwxyz';
-const uc_list   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const num_list  = '1234567890';
-const spec_list = '!@#$%^&*()_+}{[]/.,<>?\\|~`:\";\'';
+const alpha_list   = 'abcdefghijklmnopqrstuvwxyz';
+const num_list     = '1234567890';
+const spec_list    = '!@#$%^&*()_+}{[]/.,<>?\\|~`:\";\'';
 
 const generate_password = () => {
-    if(generator.lc === false &&
-        generator.uc === false &&
+    if(generator.lc         === false &&
+        generator.uc        === false &&
         generator.numerical === false &&
-        generator.special === false) {
-        swal("Invalid password criteria selected. Must select at least one character type.", {
-            icon: "error"
-        });
+        generator.special   === false) {
+            swal("Invalid password criteria selected. Must select at least one character type.", {
+                    icon: "error"
+                });
     } else {
         let char_list = "";
         if(generator.lc) {
-            char_list = char_list + lc_list;
+            char_list += alpha_list;
         }
 
         if(generator.uc) {
-            char_list = char_list + uc_list;
+            char_list += alpha_list.toUpperCase();
         }
 
         if(generator.numerical) {
-            char_list = char_list + num_list;
+            char_list += num_list;
         }
 
         if(generator.special) {
-            char_list = char_list + spec_list;
+            char_list += spec_list;
         }
 
         let result = "";
 
         for(let i = 0; i < generator.length; i++) {
-            let char = char_list.substr(Math.floor(Math.random() * char_list.length), 1);
+            let char_index = Math.floor(Math.random() * char_list.length);
+            let char = char_list.substr(char_index, 1);
             result = result + char;
         }
 
